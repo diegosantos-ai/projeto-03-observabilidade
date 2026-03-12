@@ -1,5 +1,3 @@
-# contexto.md
-
 # Contexto do Projeto 03 — Observabilidade, Logs e Alertas
 
 ## 1. Visão geral do cenário atual
