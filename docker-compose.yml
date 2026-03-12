@@ -1,0 +1,108 @@
+services:
+  app:
+    image: alpine:3.20
+    container_name: p03-app-log-generator
+    restart: unless-stopped
+    command: >
+      sh -c '
+      mkdir -p /app/logs;
+      touch /app/logs/app.log;
+      i=0;
+      while true; do
+        i=$$((i+1));
+        TS=$$(date -Iseconds);
+        if [ $$((i % 15)) -eq 0 ]; then
+          echo "{\"timestamp\":\"$$TS\",\"level\":\"error\",\"service\":\"app\",\"event\":\"simulated_failure\",\"message\":\"Erro simulado para observabilidade\",\"status_code\":500,\"response_time_ms\":1200}" >> /app/logs/app.log;
+        elif [ $$((i % 5)) -eq 0 ]; then
+          echo "{\"timestamp\":\"$$TS\",\"level\":\"warning\",\"service\":\"app\",\"event\":\"slow_response\",\"message\":\"Resposta acima do tempo esperado\",\"status_code\":200,\"response_time_ms\":850}" >> /app/logs/app.log;
+        else
+          echo "{\"timestamp\":\"$$TS\",\"level\":\"info\",\"service\":\"app\",\"event\":\"request_processed\",\"message\":\"Requisição processada com sucesso\",\"status_code\":200,\"response_time_ms\":120}" >> /app/logs/app.log;
+        fi;
+        sleep 5;
+      done
+      '
+    volumes:
+      - ./app/logs:/app/logs
+    networks:
+      - observability
+
+  loki:
+    image: grafana/loki:3.0.0
+    container_name: p03-loki
+    restart: unless-stopped
+    command: -config.file=/etc/loki/config.yml
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki/config.yml:/etc/loki/config.yml:ro
+      - ./loki/data:/loki
+    networks:
+      - observability
+
+  promtail:
+    image: grafana/promtail:3.0.0
+    container_name: p03-promtail
+    restart: unless-stopped
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./promtail/config.yml:/etc/promtail/config.yml:ro
+      - ./app/logs:/app/logs:ro
+      - ./promtail/positions.yaml:/tmp/positions.yaml
+    depends_on:
+      - loki
+    networks:
+      - observability
+
+  prometheus:
+    image: prom/prometheus:v2.53.1
+    container_name: p03-prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/data:/prometheus
+    depends_on:
+      - node-exporter
+    networks:
+      - observability
+
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    container_name: p03-node-exporter
+    restart: unless-stopped
+    command:
+      - --path.rootfs=/host
+    ports:
+      - "9100:9100"
+    volumes:
+      - /:/host:ro,rslave
+    networks:
+      - observability
+
+  grafana:
+    image: grafana/grafana:11.1.4
+    container_name: p03-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+# Credenciais temporárias para ambiente local de laboratório
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+      - loki
+    networks:
+      - observability
+
+networks:
+  observability:
+    driver: bridge

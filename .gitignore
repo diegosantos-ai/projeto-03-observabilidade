@@ -1,0 +1,77 @@
+# =========================
+# Sistema operacional
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Editores e IDEs
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# =========================
+# Logs e arquivos temporários
+# =========================
+*.log
+logs/
+app/logs/*.log
+app/logs/*.json
+app/logs/*.jsonl
+tmp/
+temp/
+
+# =========================
+# Arquivos de ambiente e segredos
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Docker / Compose overrides locais
+# =========================
+docker-compose.override.yml
+
+# =========================
+# Grafana / banco local / artefatos de runtime
+# =========================
+grafana/data/
+grafana/plugins/
+
+# =========================
+# Prometheus / Loki / Promtail dados locais
+# =========================
+prometheus/data/
+loki/data/
+promtail/positions.yaml
+
+# =========================
+# Terraform (caso use futuramente em apoio)
+# =========================
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+.terraform.lock.hcl
+
+# =========================
+# Artefatos diversos
+# =========================
+*.bak
+*.tmp
+*.pid
