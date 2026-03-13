@@ -47,7 +47,7 @@ services:
     volumes:
       - ./promtail/config.yml:/etc/promtail/config.yml:ro
       - ./app/logs:/app/logs:ro
-      - ./promtail/positions.yaml:/tmp/positions.yaml
+      - ./promtail/data:/var/lib/promtail
     depends_on:
       - loki
     networks:

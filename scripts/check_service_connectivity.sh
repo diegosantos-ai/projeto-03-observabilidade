@@ -9,8 +9,8 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$PROJECT_ROOT"
 
 echo
-echo "[1] PROMTAIL -> LOKI"
-docker compose exec promtail wget -qO- http://loki:3100/ready || true
+echo "[1] PROMTAIL -> LOKI (evidência por logs)"
+docker compose logs --tail=50 loki promtail | grep -E "flushing stream|Adding target|tail routine: started" || true
 
 echo
 echo "[2] PROMETHEUS -> NODE EXPORTER"
