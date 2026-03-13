@@ -35,9 +35,29 @@ Registrar aprendizado operacional, ajuste estrutural ou hábito de validação q
 ## Histórico de troubleshooting
 
 ### Registro 001
-**Status:** ainda não iniciado
+**Status:** resolvido
 
-Este espaço será preenchido conforme os problemas reais surgirem durante a implementação, integração e validação da stack.
+### Erro observado
+Promtail apresentava erro recorrente ao gravar o arquivo de posições:
+`error writing positions file` com falha de `rename` em `/tmp/positions.yaml` e mensagem `device or resource busy`.
+
+### O que significa
+O Promtail não conseguia persistir corretamente o estado de leitura dos logs. Isso comprometia a retomada consistente após reinicializações.
+
+### Causa provável
+O `docker-compose.yml` montava um arquivo individual do host diretamente em `/tmp/positions.yaml`, enquanto o Promtail utiliza escrita atômica com arquivo temporário e `rename`, gerando conflito no bind mount de arquivo.
+
+### Como validar
+- revisar `docker-compose.yml`
+- revisar `promtail/config.yml`
+- verificar logs do container `promtail`
+- confirmar ausência de novos erros após reinicialização da stack
+
+### Correção aplicada
+Foi substituído o bind mount do arquivo `./promtail/positions.yaml:/tmp/positions.yaml` por um bind mount de diretório `./promtail/data:/var/lib/promtail`, e o `positions.filename` foi alterado para `/var/lib/promtail/positions.yaml`.
+
+### Como evitar no futuro
+Evitar persistir arquivos de estado internos de containers via bind mount direto em arquivo quando o processo usa escrita atômica com `rename`. Preferir bind mount de diretório persistente.
 
 ---
 

@@ -9,7 +9,7 @@ Stack de observabilidade voltada para coleta de métricas, centralização de lo
 ![Node Exporter](https://img.shields.io/badge/Node_Exporter-Infraestrutura-3EAAAF?style=for-the-badge&logo=prometheus&logoColor=white)
 ![Slack](https://img.shields.io/badge/Slack-Alertas-4A154B?style=for-the-badge&logo=slack&logoColor=white)
 ![Docker Compose](https://img.shields.io/badge/Docker_Compose-Orquestra%C3%A7%C3%A3o-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Status](https://img.shields.io/badge/status-em%20estrutura%C3%A7%C3%A3o-blue?style=for-the-badge)
+![Status](https://img.shields.io/badge/status-fase%204%20em%20andamento-blue?style=for-the-badge)
 
 ## Visão geral
 
@@ -56,8 +56,6 @@ O projeto contempla:
 - alerta automático no Slack
 - documentação técnica e fluxo reproduzível de execução e validação
 
-Neste momento, o projeto está sendo estruturado com foco em clareza arquitetural, base documental forte e planejamento controlado por fases.
-
 ---
 
 ## Tecnologias utilizadas
@@ -89,7 +87,7 @@ Essa decisão foi tomada para garantir:
 - melhor narrativa técnica de portfólio
 - maior controle sobre o cenário de validação
 
-Em vez de depender inicialmente de logs de sistema ou de servidor web como base principal, o projeto parte de eventos estruturados da aplicação, permitindo uma observabilidade mais clara e orientada a operação.
+Em vez de depender inicialmente de logs de sistema ou de servidor web como base principal, o projeto parte de eventos estruturados da aplicação, permitindo uma observabilidade mais clara e orientada à operação.
 
 ---
 
@@ -110,7 +108,7 @@ A arquitetura do projeto foi desenhada para demonstrar um fluxo ponta a ponta de
 
 ### Visão arquitetural em alto nível
 
-```
+```text
 [Aplicação]
     └─ gera logs JSON
                 │
@@ -119,24 +117,24 @@ A arquitetura do projeto foi desenhada para demonstrar um fluxo ponta a ponta de
                 │
                 v
             [Loki] <────────────┐
-                                        │
-                                 [Grafana]
-                                        │
-                                        │ alertas
-                                        v
-                                    [Slack]
+                                │
+                            [Grafana]
+                                │
+                                │ alertas
+                                v
+                              [Slack]
 
 [Node Exporter]
         │
         v
-[Prometheus] ────────────────┘
-```
+[Prometheus] ──────────────────┘
+````
 
 ---
 
 ## Estrutura atual do projeto
 
-```
+```text
 .
 ├── alerting/
 │   └── README.md
@@ -154,116 +152,145 @@ A arquitetura do projeto foi desenhada para demonstrar um fluxo ponta a ponta de
 ├── prometheus/
 │   └── prometheus.yml
 ├── promtail/
-│   └── config.yml
+│   ├── config.yml
+│   └── positions.yaml
+├── scripts/
+│   ├── check_service_connectivity.sh
+│   ├── check_stack_health.sh
+│   ├── session_end_check.sh
+│   └── session_start_check.sh
 ├── .gitignore
 └── README.md
 ```
 
+---
+
 ## Responsabilidade dos diretórios e arquivos
 
-| Arquivo/Diretório           | Descrição                                                                     |
-| --------------------------- | ----------------------------------------------------------------------------- |
-| `alerting/README.md`        | Documento previsto para registrar a estratégia de alertas e integrações da stack. |
-| `app/logs/`                 | Diretório previsto para os logs estruturados emitidos pela aplicação.         |
-| `docker-compose.yml`        | Orquestração local da stack de observabilidade.                               |
-| `docs/contexto.md`          | Contexto operacional e estratégico do projeto.                                |
-| `docs/arquitetura.md`       | Desenho técnico da solução e fluxo completo dos dados.                        |
-| `docs/troubleshooting.md`   | Documento previsto para registrar erros, causas, validações, correções e prevenção ao longo da execução do projeto. |
-| `grafana/provisioning/`     | Provisionamento futuro de datasources, dashboards e configurações do Grafana. |
-| `loki/config.yml`           | Configuração do Loki.                                                         |
-| `prometheus/prometheus.yml` | Configuração do Prometheus e seus targets.                                    |
-| `promtail/config.yml`       | Configuração de descoberta e envio de logs para o Loki.                       |
-| `.gitignore`                | Regras de exclusão de arquivos locais e temporários.                          |
-| `README.md`                 | Documentação principal do projeto.                                            |
+| Arquivo/Diretório           | Descrição                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------- |
+| `alerting/README.md`        | Documento previsto para registrar estratégia de alertas e integrações da stack. |
+| `app/logs/`                 | Diretório dos logs estruturados emitidos pela aplicação simulada.               |
+| `docker-compose.yml`        | Orquestração local da stack de observabilidade.                                 |
+| `docs/contexto.md`          | Contexto operacional e estratégico do projeto.                                  |
+| `docs/arquitetura.md`       | Desenho técnico da solução e fluxo completo dos dados.                          |
+| `docs/troubleshooting.md`   | Histórico técnico de erros, hipóteses, validações, correções e prevenção.       |
+| `grafana/provisioning/`     | Estrutura prevista para provisionamento de datasources, dashboards e alerting.  |
+| `loki/config.yml`           | Configuração do Loki.                                                           |
+| `prometheus/prometheus.yml` | Configuração do Prometheus e seus targets.                                      |
+| `promtail/config.yml`       | Configuração de descoberta e envio de logs para o Loki.                         |
+| `promtail/positions.yaml`   | Arquivo de estado de leitura do Promtail.                                       |
+| `scripts/`                  | Scripts operacionais de abertura, fechamento e validação da stack.              |
+| `.gitignore`                | Regras de exclusão de arquivos locais e temporários.                            |
+| `README.md`                 | Documentação principal do projeto.                                              |
 
 ---
 
-## Status do projeto
+## Status atual do projeto
 
 ### Fases concluídas
 
-- Fase 1 — Definição estratégica e base documental
+* Fase 1 — Definição estratégica e base documental
+* Fase 2 — Estrutura inicial do repositório
+* Fase 3 — Aplicação emissora de logs JSON
 
 ### Fase atual
 
-- Fase 2 — Estrutura inicial do repositório
+* Fase 4 — Stack base com Docker Compose
 
-### Próxima evolução prevista
+### Estado atual da fase
 
-- criação da base mínima funcional da stack
-- preenchimento das configurações iniciais
-- preparação da aplicação emissora de logs JSON
-- início da integração entre Promtail, Loki, Prometheus e Grafana
+A stack base já foi estruturada e sobe com os principais serviços ativos:
+
+* aplicação geradora de logs
+* Loki
+* Promtail
+* Prometheus
+* Node Exporter
+* Grafana
+
+Neste momento, a Fase 4 segue **em validação**, com foco em:
+
+* health básico dos containers
+* comunicação entre serviços
+* coerência de volumes e persistência mínima
+* validação de acesso aos serviços
+
+### Bloqueio técnico atual
+
+Existe um bloqueio conhecido no Promtail relacionado à persistência do arquivo de posições (`positions.yaml`), com erro recorrente de escrita/rename no volume montado.
+
+Por isso, embora a stack já esteja operacional em boa parte, a Fase 4 **ainda não está formalmente encerrada**.
 
 ---
 
 ## Planejamento macro por fases
 
-O projeto foi planejado do começo ao fim antes da execução técnica, com gestão por fases no Trello.
+O projeto foi planejado do começo ao fim antes da execução técnica, com gestão por fases.
 
 ### Fase 1 — Definição estratégica e base documental
 
-- objetivo macro
-- critério de aceite
-- contexto do projeto
-- arquitetura da solução
-- planejamento completo das fases
+* objetivo macro
+* critério de aceite
+* contexto do projeto
+* arquitetura da solução
+* planejamento completo das fases
 
 ### Fase 2 — Estrutura inicial do repositório
 
-- README inicial
-- `.gitignore`
-- diretórios e arquivos base
-- revisão da estrutura do projeto
+* README inicial
+* `.gitignore`
+* diretórios e arquivos base
+* revisão da estrutura do projeto
 
 ### Fase 3 — Aplicação emissora de logs JSON
 
-- definição da aplicação
-- modelo do log
-- geração de eventos `info`, `warning` e `error`
+* definição da aplicação
+* modelo do log
+* geração de eventos `info`, `warning` e `error`
 
 ### Fase 4 — Stack base com Docker Compose
 
-- definição e subida inicial dos serviços
-- integração de rede e volumes
-- validação básica dos containers
+* definição e subida inicial dos serviços
+* integração de rede e volumes
+* validação básica dos containers
 
 ### Fase 5 — Coleta e centralização de logs
 
-- Promtail
-- Loki
-- consulta em tempo real no Grafana
+* Promtail
+* Loki
+* consulta em tempo real no Grafana
 
 ### Fase 6 — Coleta de métricas com Prometheus
 
-- Node Exporter
-- Prometheus
-- consulta de CPU
+* Node Exporter
+* Prometheus
+* consulta de CPU
 
 ### Fase 7 — Dashboards operacionais
 
-- painel de CPU
-- painel de logs
-- painel de erros
+* painel de CPU
+* painel de logs
+* painel de erros
 
 ### Fase 8 — Alertas automáticos no Slack
 
-- integração com Slack
-- regra de erro
-- regra complementar de CPU
+* integração com Slack
+* regra de erro
+* regra complementar de CPU
 
 ### Fase 9 — Simulação operacional e troubleshooting
 
-- geração controlada de eventos
-- validação ponta a ponta
-- documentação de troubleshooting
+* geração controlada de eventos
+* validação ponta a ponta
+* documentação de troubleshooting
 
 ### Fase 10 — Documentação final e fechamento
 
-- consolidação do README
-- evidências
-- revisão técnica
-- encerramento formal do projeto
+* consolidação do README
+* evidências
+* revisão técnica
+* encerramento formal do projeto
 
 ---
 
@@ -271,14 +298,14 @@ O projeto foi planejado do começo ao fim antes da execução técnica, com gest
 
 O projeto será considerado concluído quando houver evidência funcional e técnica de que:
 
-- métricas estão sendo coletadas corretamente
-- há painel funcional de CPU
-- logs estruturados estão centralizados no Loki
-- logs podem ser consultados em tempo real no Grafana
-- erros podem ser filtrados com clareza
-- uma condição crítica dispara alerta automático no Slack
-- a documentação está coerente com a implementação real
-- o fluxo de execução e validação está reproduzível
+* métricas estão sendo coletadas corretamente
+* há painel funcional de CPU
+* logs estruturados estão centralizados no Loki
+* logs podem ser consultados em tempo real no Grafana
+* erros podem ser filtrados com clareza
+* uma condição crítica dispara alerta automático no Slack
+* a documentação está coerente com a implementação real
+* o fluxo de execução e validação está reproduzível
 
 ---
 
@@ -286,36 +313,54 @@ O projeto será considerado concluído quando houver evidência funcional e téc
 
 ### Antes de alterar
 
-- revisar a fase atual no Trello
-- revisar a task em andamento
-- confirmar branch correta
-- verificar `git status`
-- revisar o contexto e a arquitetura do projeto
-- entender o impacto da mudança antes de editar qualquer arquivo
+* revisar a fase atual
+* revisar a task em andamento
+* confirmar branch correta
+* verificar `git status`
+* revisar contexto e arquitetura
+* entender o impacto da mudança antes de editar qualquer arquivo
 
 ### Durante a execução
 
-- alterar um bloco coerente por vez
-- validar antes de empilhar novas mudanças
-- revisar estrutura com `tree`
-- revisar alterações com `git diff`
+* alterar um bloco coerente por vez
+* validar antes de empilhar novas mudanças
+* revisar estrutura e arquivos afetados
+* revisar alterações com `git diff`
 
 ### Após a execução
 
-- validar comportamento esperado
-- atualizar documentação mínima, se necessário
-- mover a task para **Em validação**
-- só marcar como **Concluído** depois de validação real
+* validar comportamento esperado
+* atualizar documentação mínima, quando necessário
+* mover task para validação
+* só marcar como concluída depois de evidência real
+
+---
+
+## Scripts operacionais
+
+O projeto possui scripts auxiliares para padronizar abertura, validação e fechamento de sessão:
+
+* `scripts/session_start_check.sh`
+* `scripts/check_stack_health.sh`
+* `scripts/check_service_connectivity.sh`
+* `scripts/session_end_check.sh`
+
+Esses scripts ajudam a:
+
+* conferir branch e estado do repositório
+* validar containers e serviços principais
+* acelerar retomada de contexto
+* reduzir perda de informação entre sessões
 
 ---
 
 ## Documentação complementar
 
-A documentação principal do projeto está sendo separada em arquivos específicos para manter clareza entre contexto, arquitetura e troubleshooting:
+A documentação principal do projeto está separada em arquivos específicos para manter clareza entre contexto, arquitetura e troubleshooting:
 
-- `docs/contexto.md`
-- `docs/arquitetura.md`
-- `docs/troubleshooting.md`
+* `docs/contexto.md`
+* `docs/arquitetura.md`
+* `docs/troubleshooting.md`
 
 Essa separação foi adotada para evitar que o README fique inchado demais e, ao mesmo tempo, preservar profundidade técnica adequada.
 
@@ -323,37 +368,37 @@ Essa separação foi adotada para evitar que o README fique inchado demais e, ao
 
 ## Boas práticas aplicadas
 
-- definição de escopo antes da implementação
-- planejamento completo por fases e tasks
-- documentação técnica antes da execução
-- separação entre contexto, arquitetura e troubleshooting
-- foco em logs estruturados como fonte principal de observabilidade
-- estrutura de projeto organizada por componente
-- validação antes de marcar qualquer entrega como concluída
-- preocupação com retenção, rastreabilidade e resposta a incidentes
+* definição de escopo antes da implementação
+* planejamento por fases e tasks
+* documentação técnica antes da execução
+* separação entre contexto, arquitetura e troubleshooting
+* foco em logs estruturados como fonte principal de observabilidade
+* estrutura organizada por componente
+* validação antes de marcar qualquer entrega como concluída
+* preocupação com rastreabilidade, troubleshooting e resposta a incidentes
 
 ---
 
 ## Cuidados importantes
 
-- não versionar segredos ou webhooks do Slack
-- não expor credenciais em arquivos do projeto
-- evitar inflar o escopo antes de consolidar o MVP
-- validar integração real entre os componentes antes de considerar a stack pronta
-- manter a documentação coerente com o comportamento implementado
-- não tratar container "UP" como sinônimo de observabilidade funcionando
+* não versionar segredos ou webhooks do Slack
+* não expor credenciais reais em arquivos do projeto
+* evitar inflar escopo antes de consolidar o MVP
+* validar integração real entre componentes antes de considerar a stack pronta
+* manter a documentação coerente com o comportamento implementado
+* não tratar container `UP` como sinônimo de observabilidade funcionando
 
 ---
 
 ## Próximos passos
 
-A próxima etapa formal do projeto é consolidar a **Fase 2 — Estrutura inicial do repositório**, com foco em:
+A próxima entrega formal é **concluir a Fase 4 — Stack base com Docker Compose**, com foco em:
 
-- preencher `README.md`
-- preencher `.gitignore`
-- definir a base mínima dos arquivos de configuração
-- revisar a coerência da estrutura física do projeto
-- preparar o repositório para o primeiro ciclo real de implementação
+* corrigir o bloqueio de persistência do Promtail
+* validar health básico dos containers
+* validar comunicação entre os serviços
+* confirmar coerência de volumes e persistência mínima
+* formalizar o fechamento da fase antes de avançar para coleta e centralização de logs
 
 ---
 
@@ -362,4 +407,7 @@ A próxima etapa formal do projeto é consolidar a **Fase 2 — Estrutura inicia
 **Diego Santos**
 
 Projeto desenvolvido como prática de portfólio com foco em observabilidade, operação, troubleshooting, alertas e maturidade DevOps.
+
 ````
+
+---
