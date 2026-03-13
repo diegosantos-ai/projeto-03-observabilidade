@@ -75,3 +75,7 @@ crash.log
 *.bak
 *.tmp
 *.pid
+docs/prompt_abertura_sessao.md
+docs/prompt_fechamento_sessao.md
+docs/checkpoints/session-context.md
+docs/checkpoints/project-status.md
