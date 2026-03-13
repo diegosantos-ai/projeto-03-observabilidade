@@ -59,6 +59,31 @@ Foi substituído o bind mount do arquivo `./promtail/positions.yaml:/tmp/positio
 ### Como evitar no futuro
 Evitar persistir arquivos de estado internos de containers via bind mount direto em arquivo quando o processo usa escrita atômica com `rename`. Preferir bind mount de diretório persistente.
 
+### Registro 002
+**Status:** resolvido
+
+### Erro observado
+Ao cadastrar o Loki como data source no Grafana, a conexão falhou com a mensagem:
+`Unable to connect with Loki. Please check the server logs for more details.`
+
+### O que significa
+O Grafana não conseguiu alcançar a API do Loki usando a URL configurada no data source.
+
+### Causa provável
+A URL foi digitada incorretamente no cadastro do data source.
+
+### Como validar
+- revisar a URL configurada no Grafana
+- testar novamente com `Save & test`
+- confirmar sucesso da conexão
+- validar consulta no Explore com `{job="app-logs"}`
+
+### Correção aplicada
+Foi corrigida a URL do data source Loki no Grafana para o formato correto com hostname do serviço Docker Compose e porta adequada.
+
+### Como evitar no futuro
+Sempre validar com atenção hostname e porta ao cadastrar integrações entre containers. Em ambiente Docker Compose, preferir o nome do serviço como hostname interno.
+
 ---
 
 ## Observação operacional
